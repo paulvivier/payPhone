@@ -1,0 +1,30 @@
+﻿@{
+    Response.ContentType = "text/xml";
+
+    // put a phone number you've verified with Twilio to use as a caller ID number
+    string callerId = "+1xxxxxxxxxx";
+
+    // put your default Twilio Client name here, for when a phone number isn't given
+    string number   = "jenny";
+
+    // get the phone number from the page request parameters, if given
+    if (Request["PhoneNumber"] != null) {
+        number = Request["PhoneNumber"];
+    }
+
+    // wrap the phone number or client name in the appropriate TwiML verb
+    // by checking if the number given has only digits and format symbols
+    string numberOrClient;
+    System.Text.RegularExpressions.Match m = System.Text.RegularExpressions.Regex.Match(number, @"^[\d\+\-\(\) ]+$");
+    if (m.Success) {
+        numberOrClient = string.Format("<Number>{0}</Number>", number);
+    } else {
+        numberOrClient = string.Format("<Client>{0}</Client>", number);
+    }    
+}
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Dial callerId="@callerId">
+          @Html.Raw(numberOrClient)
+    </Dial>
+</Response>
