@@ -25,9 +25,10 @@ module.exports = function(app) {
     // Use morgan for HTTP request logging
     app.use(morgan('combined'));
 
-    // Home Page with Click to Call 
+    // Home Page with Better Call Paul
     app.get('/', function(request, response) {
         response.render('index');
+//        response.render('betterCallPaul');
     });
 
     // Handle an AJAX POST request to place an outbound call
