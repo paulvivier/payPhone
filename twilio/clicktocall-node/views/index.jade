@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title Click To Call Tutorial
+    title Get Pauls Bot to Call You
 
     // We use Twitter Bootstrap as the default styling for our page
     link(rel='stylesheet', 
@@ -13,13 +13,11 @@ html(lang="en")
     link(rel='stylesheet', href='/vendor/intl-phone/css/intlTelInput.css')
   body
     .container
-      h1 Click To Call
+      h1 Ask Paul's Bot
       p.
-        Click To Call converts your website's users into engaged customers by 
-        creating an easy way for your customers to contact your sales and 
-        support teams right on your website.
-
-      p Here's an example of how it's done!
+        This is a test site which triggers a service to call you and leave a
+        message of Paul's choosing. 
+      p Hopefully he'll bother to change it on occasion.
 
       hr
 
@@ -28,15 +26,13 @@ html(lang="en")
         .col-md-12
           form(id='contactForm', role='form')
             .form-group
-              h3 Call Sales
+              h3 Call Me Here
               p.help-block.
-                Are you interested in impressing your friends and confounding 
-                your enemies? Enter your phone number below, and our team will 
-                contact you right away.
+                 Send me your phone number, and I'll send you a random message.     
             .form-group
               input.form-control(type='text', id='phoneNumber', 
-                placeholder='(651) 555-7889')
-            button(type='submit', class='btn btn-default') Contact Sales
+                placeholder='(555) 555-5555')
+            button(type='submit', class='btn btn-default') Call Me
 
     // Include page dependencies
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
