@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title Get Pauls Bot to Call You
+    title Better Call Paul
 
     // We use Twitter Bootstrap as the default styling for our page
     link(rel='stylesheet', 
@@ -13,11 +13,10 @@ html(lang="en")
     link(rel='stylesheet', href='/vendor/intl-phone/css/intlTelInput.css')
   body
     .container
-      h1 Ask Paul's Bot
+      h1 Better Call Paul
       p.
-        This is a test site which triggers a service to call you and leave a
-        message of Paul's choosing. 
-      p Hopefully he'll bother to change it on occasion.
+        By entering your phone number below, a phone call will be initated with you
+        and then Paul will be called at his preferred number. 
 
       hr
 
@@ -28,7 +27,7 @@ html(lang="en")
             .form-group
               h3 Call Me Here
               p.help-block.
-                 Send me your phone number, and I'll send you a random message.     
+                 Send me your phone number, and I'll make a conference call between you and Paul.     
             .form-group
               input.form-control(type='text', id='phoneNumber', 
                 placeholder='(555) 555-5555')
