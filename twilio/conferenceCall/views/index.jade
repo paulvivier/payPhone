@@ -1,0 +1,42 @@
+doctype html
+html(lang="en")
+  head
+    title Get Pauls Bot to Call You
+
+    // We use Twitter Bootstrap as the default styling for our page
+    link(rel='stylesheet', 
+      href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css')
+    link(rel='stylesheet', 
+      href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css')
+
+    // Include CSS for our third-party telephone input jQuery plugin
+    link(rel='stylesheet', href='/vendor/intl-phone/css/intlTelInput.css')
+  body
+    .container
+      h1 Ask Paul's Bot
+      p.
+        This is a test site which triggers a service to call you and leave a
+        message of Paul's choosing. 
+      p Hopefully he'll bother to change it on occasion.
+
+      hr
+
+      // C2C contact form
+      .row
+        .col-md-12
+          form(id='contactForm', role='form')
+            .form-group
+              h3 Call Me Here
+              p.help-block.
+                 Send me your phone number, and I'll send you a random message.     
+            .form-group
+              input.form-control(type='text', id='phoneNumber', 
+                placeholder='(555) 555-5555')
+            button(type='submit', class='btn btn-default') Call Me
+
+    // Include page dependencies
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+    script(src='/vendor/intl-phone/js/intlTelInput.min.js')
+
+    // Our app's front-end JavaScript logic
+    script(src='/app.js')
