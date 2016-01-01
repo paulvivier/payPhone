@@ -1,0 +1,31 @@
+{
+  "name": "twilio-device-sample",
+  "version": "0.0.0",
+  "description": "A sample implementation of twilio.device library ... because I can't find anything",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js" 
+  },
+  "repository" :{ 
+      "type" : "git", 
+      "url" : "https://github.com/paulvivier/payPhone.git"
+  },
+  "keywords": [
+        "twilio",
+        "device",
+        "sample"
+  ],
+      "author": "Paul Vivier",
+      "license": "MIT",
+      "dependencies": {
+        "body-parser": "^1.6.5",
+        "serve-static": "^1.10.0",
+        "connect": "^2.30.2",
+        "twilio": "^2.8.0", 
+        "express" : "^4.13.3",
+        "morgan": "^1.2.3",
+        "jade": "1.7.x"
+      },
+  "devDependencies": {
+  }
+}
