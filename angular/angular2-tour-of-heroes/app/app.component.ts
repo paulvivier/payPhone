@@ -1,30 +1,24 @@
 import {Component} from 'angular2/core';
+import {Hero} from './hero';
+import {HeroDetailComponent} from './hero-detail.component';
 
-interface Hero {
-  id: number;
-  name: string;
-}
 
 @Component({
     selector: 'my-app',
-    template: `
-    <h1>{{title}}</h1>
-<h2>My Heroes</h2>
-<ul class="heroes">
-  <li *ngFor="#hero of heroes" 
-        [class.selected]="hero === selectedHero"
-        (click)="onSelect(hero)">
-    <!-- each hero goes here -->
- 	<span class="badge">{{hero.id}}</span> {{hero.name}}
-  </li>
-</ul> 
 
-<div *ngIf="selectedHero">
-   <h2>{{selectedHero.name}} details!</h2>
-    <div><label>id: </label>{{selectedHero.id}}</div>
-    <div><label>name: </label><input [(ngModel)]="selectedHero.name" placeholder="name"></div>
-    </div>
-     `,
+template:`
+  <h1>{{title}}</h1>
+  <h2>My Heroes</h2>
+  <ul class="heroes">
+    <li *ngFor="#hero of heroes"
+      [class.selected]="hero === selectedHero"
+      (click)="onSelect(hero)">
+      <span class="badge">{{hero.id}}</span> {{hero.name}}
+    </li>
+  </ul>
+  <my-hero-detail [hero]="selectedHero"></my-hero-detail>
+`,
+     
 
 styles:[`
   .selected {
@@ -46,7 +40,7 @@ styles:[`
     padding: .3em 0em;
     height: 1.6em;
     border-radius: 4px;
-  }
+}
   .heroes li.selected:hover {
     color: white;
   }
@@ -73,8 +67,8 @@ styles:[`
     margin-right: .8em;
     border-radius: 4px 0px 0px 4px;
   }
-`]
-
+`],
+directives: [HeroDetailComponent]
 
 })
 
