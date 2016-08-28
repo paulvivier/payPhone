@@ -8,6 +8,16 @@ Off = ready to recieve a call
 
  */
 
+ /* Defects:
+  *  - Should stop and tell me if the battery is disconnected or low. 
+  *  - Microphone is not active when picking up
+  * 
+  *
+  * 
+  * */
+
+  
+
 // Define the FONA libraries and inputs
 #include "Adafruit_FONA.h"
 
@@ -61,6 +71,22 @@ void setup() {
   // initialize serial communication:
   Serial.begin(9600);
 
+ // Initialize FONA
+     fonaSerial->begin(4800);
+      if (! fona.begin(*fonaSerial)) {
+        Serial.println(F("Couldn't find FONA"));
+        while (1);
+      }
+      type = fona.type();
+      Serial.println(F("FONA is OK"));
+      Serial.print(F("Found "));
+      switch (type) {
+        case FONA800H:  // There is a larger list in 'FONAtest' if you want to add more cases.
+          Serial.println(F("FONA 800H")); break;
+        default: 
+          Serial.println(F("???")); break; // Just in case its not recognized.
+      }
+
   
 }
 
@@ -78,22 +104,34 @@ void loop() {
         digitalWrite(ledPin, HIGH);
       }
 
-  // Initialize FONA
-     fonaSerial->begin(4800);
-      if (! fona.begin(*fonaSerial)) {
-        Serial.println(F("Couldn't find FONA"));
-        while (1);
-      }
-      type = fona.type();
-      Serial.println(F("FONA is OK"));
-      Serial.print(F("Found "));
-      switch (type) {
-        case FONA800H:  // There is a larger list in 'FONAtest' if you want to add more cases.
-          Serial.println(F("FONA 800H")); break;
-        default: 
-          Serial.println(F("???")); break; // Just in case its not recognized.
-      }
+
+// FONA Setup
+
+
+ 
+// Stop everything and tell me to plug the battery in. 
+ uint16_t vbat;
+ if (! fona.getBattPercent(&vbat)) {
+          Serial.println(F("Failed to read Batt"));
+        } else {
+          Serial.print(F("VPct = ")); Serial.print(vbat); Serial.println(F("%"));
+        }  
+    while (vbat < 2) {
+      Serial.println("Battery not connected. Continue ? [Y]"); 
+      char command = Serial.read();
+        Serial.println(command);
       
+        switch (command) {
+          case 'Y': {
+              Serial.println("Its your call ... Pun intended");
+              break;
+            }
+          case 'N': {
+              Serial.println("Its your call ... Pun intended");
+              break;
+            }
+         }
+    }      
 // Main Loop - Call Status . 
 // Each Case should check the Reciever switch. 
 //      receiverState = ON  - Handset has been removed
@@ -107,70 +145,117 @@ void loop() {
 int8_t callstat = fona.getCallStatus();
   char callerID[32] = {0};
 
+
 // *** Defect: New state of the button isn't getting read inside the loop. (fixed)
 // *** Defect: Set external audio when picked up. 
 
 while (! callstat) {
+ 
+  // Turn the LED on and off based on the switch state
+      if (receiverState == HIGH) {
+        // if the current state is HIGH then the reciver
+        // went from off to on:
+        Serial.println("RECEIVER ON");
+        digitalWrite(ledPin, HIGH);
+        }
+      else {
+        // if the current state is HIGH then the reciver
+        // went from off to on:
+        Serial.println("RECEIVER OFF");
+        digitalWrite(ledPin, LOW);
+        }
+
+  
         // get call status
         Serial.println("*** ******** ******* ");
-        Serial.println("Call Status: ");
+//        Serial.println("Call Status: ");
         int8_t callstat = fona.getCallStatus();
         receiverState = digitalRead(receiverPin);
-        Serial.println("Receiver Status: ");
-        Serial.print(receiverPin);
+//        Serial.println("Receiver Status: ");
+//        Serial.print(receiverPin);
         switch (callstat) {
           case 0: Serial.println(F("Ready")); 
                 // wait for the receiverState to change. 
 
                 if (receiverState == HIGH) {
-                  // if the current state is HIGH then the receiver
-                  // went from off to on:
-                  Serial.println("ON");
+                  Serial.println("RECEIVER ON");
                   digitalWrite(ledPin, HIGH);
                 }
                 else if (receiverState == LOW) {
-                  // if the current state is LOW then the receiver
-                  // went from on to off:
-                  Serial.println("OFF");
+                  Serial.println("RECEIVER OFF");
                   digitalWrite(ledPin, LOW);
-
                 }
-
+              
                 
                 break;
           
           case 1: Serial.println(F("Could not get status")); break;
           case 3: Serial.println(F("Ringing (incoming)")); 
 
-                // wait for the receiverState to change. 
+                // Set External output
+                if (! fona.setAudio(FONA_EXTAUDIO)) {
+                  Serial.println(F("Failed to set external audio"));
+                } else {
+                  Serial.println(F("Set external audio"));
+                }
 
+                // While incoming call is being made sit here 
+                // and wait for the receiver to be picked up. 
+                do
+                {
+                  delay(50);          // wait for sensors to stabilize  
+                  Serial.println("Incoming call ... ");
+                  receiverState = digitalRead(receiverPin);
+                } while (receiverState == LOW);
+
+              
                 if (receiverState == HIGH) {
-                  // if the current state is HIGH then the receiver
-                  // went from off (handset placed) to on (handset removed):
-                    // pick up!
+                  // Handset has been picked up):
+
+                    // Tell FONA to pick up the call.
                     if (! fona.pickUp()) {
                       Serial.println(F("Failed to pickup"));
                     } else {
                       Serial.println(F("Call picked up"));
                     }
-//                  Serial.println("ON");
+          
                   digitalWrite(ledPin, HIGH);
+                }              
+ /* 
                   
-                }
+                
                 else if (receiverState == LOW) {
-                  // if the current state is LOW then the receiver
-                  // went from on to off:
+                  // LOW = OFF:
                   Serial.println("OFF");
                   digitalWrite(ledPin, LOW);
 
-
                 }
+*/
+                  // check the state before looping again.
+                  receiverState = digitalRead(receiverPin);
+
                 break; 
 
                 
           case 4: Serial.println(F("Ringing/in progress (outgoing)")); 
-          
-          
+               
+                // While a call is in progress 
+                // wait for the receiver to be put down. 
+                do
+                {
+                  delay(100);          // wait for sensors to stabilize  
+                  Serial.println("Call in progress");
+                  // check the state before looping again.
+                  receiverState = digitalRead(receiverPin);                  
+                } while (receiverState == HIGH);
+                
+                  // when the reciverPin reads LOW then do this:
+                if (! fona.hangUp()) {
+                    Serial.println(F("Failed"));
+                  } else {
+                    Serial.println(F("OK!"));
+                  }
+                  
                 break;
           
           default: Serial.println(F("Unknown")); break;
