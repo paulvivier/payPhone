@@ -10,8 +10,8 @@ Off = ready to recieve a call
 
  /* Defects:
   *  - Should stop and tell me if the battery is disconnected or low. 
-  *  - Microphone is not active when picking up
-  * 
+  *  - Microphone is not active when picking up (fixed)
+  *  - Stays in state of "Incoming call"
   *
   * 
   * */
@@ -111,6 +111,8 @@ void loop() {
  
 // Stop everything and tell me to plug the battery in. 
  uint16_t vbat;
+
+/*
  if (! fona.getBattPercent(&vbat)) {
           Serial.println(F("Failed to read Batt"));
         } else {
@@ -131,7 +133,9 @@ void loop() {
               break;
             }
          }
-    }      
+    }
+*/
+          
 // Main Loop - Call Status . 
 // Each Case should check the Reciever switch. 
 //      receiverState = ON  - Handset has been removed
@@ -206,6 +210,8 @@ while (! callstat) {
                   delay(50);          // wait for sensors to stabilize  
                   Serial.println("Incoming call ... ");
                   receiverState = digitalRead(receiverPin);
+                  callstat = fona.getCallStatus();
+
                 } while (receiverState == LOW);
 
               
@@ -232,8 +238,11 @@ while (! callstat) {
                 }
 */
                   // check the state before looping again.
-                  receiverState = digitalRead(receiverPin);
+//                  receiverState = digitalRead(receiverPin);
 
+               callstat = fona.getCallStatus();
+
+  
                 break; 
 
                 
@@ -254,12 +263,18 @@ while (! callstat) {
                     Serial.println(F("Failed"));
                   } else {
                     Serial.println(F("OK!"));
-                  }
-                  
+
+                 }
+
+              receiverState = digitalRead(receiverPin);
+
                 break;
           
           default: Serial.println(F("Unknown")); break;
         }
+     
+      receiverState = digitalRead(receiverPin);
+  
       delay(1000);
      
       }
