@@ -28,6 +28,10 @@ void setup(){
 
 void loop(){
 
+
+    Serial.print("keyboardValue:");
+    Serial.println(keyboardValue);
+
 // Stabalize Analog Reading
 // Quick loop to see if the keyboardValue is rising dramatically. If so, break the loop. 
    while (keyboardValue > 75) {
@@ -35,6 +39,7 @@ void loop(){
    delay (30); 
    keyboardValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
       if (lastKeyboardValue + riseThreshold > keyboardValue){break;}  
+      Serial.println("Still Rising");
    }
 
 
@@ -44,8 +49,8 @@ void loop(){
     // If bad readings around #1 persist, you may need to time actual the ramp up and match delay.
     // Also may need a larger(?) capacitor.
 
-    Serial.print("keyboardValue:");
-    Serial.println(keyboardValue);
+//    Serial.print("keyboardValue:");
+//    Serial.println(keyboardValue);
     // keyboardValue should have stabalized by now. 
     // Match number printed 
     
@@ -60,11 +65,12 @@ void loop(){
                 Serial.println(keyNames[i]);
               }
               
-        //        while (keyboardValue > 25){
-        //          Serial.print("                     key:");
-        //          Serial.println(keyNames[i]);
-        //          keyboardValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
-    
+                while (keyboardValue > 25){
+                  Serial.print("                     key:");
+                  Serial.println(keyNames[i]);
+                  keyboardValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
+                }
+                
               keyLastPressed = keyPressed;
         }
     
