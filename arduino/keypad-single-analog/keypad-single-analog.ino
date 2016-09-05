@@ -25,10 +25,7 @@ void setup(){
 
 }
 
-
 void loop(){
-
-
 //    Serial.print("keyPadValue:");
 //    Serial.println(keyPadValue);
 
@@ -44,7 +41,7 @@ void loop(){
 
    while (keyPadValue < 75) {
    keyLastPressed = -1; 
-   delay (30); 
+   delay (30);
 //   Serial.println("Reset lastKeyboardValue");
    keyPadValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
 
@@ -52,15 +49,6 @@ void loop(){
 
 // Once the number has stablized, see what the reading is. 
     for (int i = 0; i < 12; i++){
-    // let the initial voltage reading stabilize, especially because of how Keypad #1 is wired.
-    // If bad readings around #1 persist, you may need to time actual the ramp up and match delay.
-    // Also may need a larger(?) capacitor.
-
-//    Serial.print("keyPadValue:");
-//    Serial.println(keyPadValue);
-    // keyPadValue should have stabalized by now. 
-    // Match number printed 
-    
      
     // Take your reading now, sir
     // Find the key that was pressed by matching the range.  
@@ -73,43 +61,21 @@ void loop(){
                 Serial.println(keyNames[i]);
               }
 
-              // Let keyPressed reset if keyPadValue drops below 25
-                while (keyPadValue > 25){
+              // Keeps keyPressed from getting resampled while button is still pressed.
+                while (keyPadValue > 75){
                //   Serial.print("                     key:");
                //   Serial.println(keyNames[i]);
                   keyPadValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
                 }
                 
               keyLastPressed = keyPressed;
-        }
+        
+        } // while loop
     
     } // int i loop
           
     keyPadValue = analogRead(keyboardPin); // See if it's time to end the loop     
+                  
+} 
 
-
-
-                    
-} // void loop
-
-      
-
-
-//wait until is no longer being pressed.   
-//   while (keyPadValue > 25) {
-//     delay (100);
-
-//     Serial.print("Button being held down:");
-//     Serial.println(keyPressed);
-//     Serial.print("Analog value:");
-//     Serial.println(keyPadValue);
-//     keyPadValue = analogRead(keyboardPin); // See if it's time to end the loop
-//   }          
-     
-   
- //  Serial.println(keyPadValue);
- //  Serial.println(keyPressed);      // print the value back to the Serial view window on your PC
-//   delay(50);                     // wait 1000 milliseconds before the next loop
-
-//}
 
