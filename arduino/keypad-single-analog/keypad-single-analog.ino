@@ -11,9 +11,8 @@ int keyPressed = 0;
 int keyboardPin = 0;    // Analog input pin that the keypad is attached to
 int keyboardValue = 0;   // value read from the keyboard
 
-int padname = 0 ;
-int intLOW = 0;
-int intHIGH = 0;
+int riseThreshold = 3;  // Rise on the slope for initiating voltage ramp up when a keyPressed
+int keyLastPressed = -1;
 
 // Range for analog voltage for various keys. Adjust by modifying resistors. 
 char keyNames[] = {'1'  ,'2'  ,'3'  ,'4'  ,'5'  ,'6'  ,'7'  ,'8'  ,'9'  ,'0'  ,'*'  ,'#'};
@@ -28,10 +27,18 @@ void setup(){
 
 
 void loop(){
-    keyboardValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
 
+// Stabalize Analog Reading
+// Quick loop to see if the keyboardValue is rising dramatically. If so, break the loop. 
    while (keyboardValue > 75) {
+   int lastKeyboardValue = keyboardValue; 
+   delay (30); 
+   keyboardValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
+      if (lastKeyboardValue + riseThreshold > keyboardValue){break;}  
+   }
 
+
+// Once the number has stablized, see what the reading is. 
     for (int i = 0; i < 12; i++){
     // let the initial voltage reading stabilize, especially because of how Keypad #1 is wired.
     // If bad readings around #1 persist, you may need to time actual the ramp up and match delay.
@@ -39,23 +46,36 @@ void loop(){
 
     Serial.print("keyboardValue:");
     Serial.println(keyboardValue);
-     // Find the range of the actual value that has been pressed.  
-       if ((keyboardValue > keyLows[i]) && (keyboardValue < keyHighs[i])){
-          keyPressed = keyNames[i];
-//          int keyPressedLast = keyPressed;
-          Serial.print("                              key:");
-          Serial.println(keyNames[i]);
-//          delay(50);
-          }          
+    // keyboardValue should have stabalized by now. 
+    // Match number printed 
+    
+     
+    // Take your reading now, sir
+    // Find the key that was pressed by matching the range.  
+        while ((keyboardValue > keyLows[i]) && (keyboardValue < keyHighs[i])){
+              keyPressed = keyNames[i];
+    
+              if (keyLastPressed != keyPressed){
+                Serial.print("                     key:");
+                Serial.println(keyNames[i]);
+              }
+              
+        //        while (keyboardValue > 25){
+        //          Serial.print("                     key:");
+        //          Serial.println(keyNames[i]);
+        //          keyboardValue = analogRead(keyboardPin); // read the keyboard value (0 - 1023)
+    
+              keyLastPressed = keyPressed;
         }
-      //   delay(100);
-
+    
+    } // int i loop
+          
     keyboardValue = analogRead(keyboardPin); // See if it's time to end the loop     
+
+                    
+} // void loop
+
       
-      }
-
-    }          
-
 
 
 //wait until is no longer being pressed.   
