@@ -3,15 +3,14 @@
 || @author Paul Vivier
 || @contact arduino@vivier.net
 
-|| Inspired and heavily influenced by DynamicKeypad by Mark Stanley
+
 
 */
-
 int keyPressed = 0;
 int keyboardPin = 0;    // Analog input pin that the keypad is attached to
 int keyPadValue = 0;   // value read from the keyboard
 
-int riseThreshold = 3;  // Rise on the slope for initiating voltage ramp up when a keyPressed
+int riseThreshold = 3;  // Rise on the slope for initial voltage ramp up when a keyPressed
 int keyLastPressed = -1;
 
 // Range for analog voltage for various keys. Adjust by modifying resistors. 
@@ -19,6 +18,7 @@ char keyNames[] = {'1'  ,'2'  ,'3'  ,'4'  ,'5'  ,'6'  ,'7'  ,'8'  ,'9'  ,'0'  ,'
 int keyLows[]  = {730  ,680  ,200  ,570  ,456  ,180  ,390  ,340  ,156  ,119  ,126  ,83};
 int keyHighs[] = {890  ,702  ,213  ,588  ,485  ,189  ,402  ,349  ,163  ,125  ,131  ,89};
 
+String numberToCall = "";
 
 void setup(){
   Serial.begin(9600);  //hardware serial to PC  
@@ -59,7 +59,12 @@ void loop(){
               if (keyLastPressed != keyPressed){
                 Serial.print("Key Pressed:");
                 Serial.println(keyNames[i]);
+                numberToCall.concat(keyNames[i]);
+         //       Serial.println(numberToCall);
+         //       Serial.print("Length of numberToCall: ");
+         //       Serial.println(numberToCall.length());
               }
+            
 
               // Keeps keyPressed from getting resampled while button is still pressed.
                 while (keyPadValue > 75){
@@ -73,6 +78,15 @@ void loop(){
         } // while loop
     
     } // int i loop
+
+
+    if (numberToCall.length() == 10) {
+     Serial.print("numberToCall: ");
+     Serial.println(numberToCall);
+     numberToCall = "";
+     
+    }
+
           
     keyPadValue = analogRead(keyboardPin); // See if it's time to end the loop     
                   
