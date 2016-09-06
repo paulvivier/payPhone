@@ -20,6 +20,8 @@ Off = ready to recieve a call
 
 // Define the FONA libraries and inputs
 #include "Adafruit_FONA.h"
+#include "keypadsingleanalog.h"
+
 
 #define FONA_RX 2
 #define FONA_TX 9
@@ -87,7 +89,6 @@ void setup() {
           Serial.println(F("???")); break; // Just in case its not recognized.
       }
 
-  
 }
 
 void loop() {
@@ -169,7 +170,6 @@ while (! callstat) {
         digitalWrite(ledPin, LOW);
         }
 
-  
         // get call status
         Serial.println("*** ******** ******* ");
 //        Serial.println("Call Status: ");
@@ -184,6 +184,33 @@ while (! callstat) {
                 if (receiverState == HIGH) {
                   Serial.println("RECEIVER ON");
                   digitalWrite(ledPin, HIGH);
+
+                // Reciever has been picked up, let's start dialing.
+               
+                
+                while (numberToCall.length() < 10) {
+                  keyboardAnalog(); 
+                  char number = char(numberToCall);
+/* DEFECT - FONA wants number as a character, but my keypadsingleanalog.h is
+ *          Using the length of the String for numberToCall to determine when
+ *          the right number of digits for a phone number have been entered (it's 
+ *          10, by the way). (For domestic US Calls). So I'm running into this nasty 
+ *          problem of trying to convert a char to a string. This would be my first
+ *          lesson in what the difference is. And a bugger of a lesson. 
+ *          I think I'm going to modify the .h to make numberToCall a char, try to
+ *          figure out a way to do some math on a char so that it stops once it has 
+ *          a number greater than 1,000,000,000  Until next time 
+
+*/                  
+                  Serial.print("Number To Call Returned!: ");
+                  Serial.println(numberToCall);
+          //        if (!fona.callPhone(numberToCall)) {
+          //            Serial.println(F("Failed"));
+          //          } else {
+          //            Serial.println(F("Sent!"));
+          //          }
+                }
+                  
                 }
                 else if (receiverState == LOW) {
                   Serial.println("RECEIVER OFF");
