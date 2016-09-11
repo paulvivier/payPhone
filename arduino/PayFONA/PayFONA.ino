@@ -1,10 +1,17 @@
+/* @file   PayFoNA.ino
+|| @version 0.1
+|| @author Paul Vivier
+|| @contact arduino@vivier.net
+*/
+
 /*
+Inspired by FONAtest and the awesome FONA product from Adafruit. 
+Thank you LadyAda and your team of 
 
 Since the behavior is to mimic a standard landline as much as possible, 
 We're goint to start with a basic switch. 
-
-On = ready to dial
-Off = ready to recieve a call
+  On = ready to dial
+  Off = ready to recieve a call
 
  */
 
@@ -24,7 +31,7 @@ Off = ready to recieve a call
 
 
 #define FONA_RX 2
-#define FONA_TX 9
+#define FONA_TX 3 // 9 for Arduino Micro
 #define FONA_RST 4
 
 // Note you need to map interrupt number to pin number
@@ -186,30 +193,33 @@ while (! callstat) {
                   digitalWrite(ledPin, HIGH);
 
                 // Reciever has been picked up, let's start dialing.
+
+
+                   while (!numberToCall[9]) {             
+// needs a while !numberToCall[9])
+                      keyboardAnalog(); // Go wait for a phone number->
+//                      Serial.print("Left Keyboard Analog loop. numberToCall[9]: ");
+//                      Serial.println(numberToCall[9]);
+                   }
+
+                   while (numberToCall[9]){
+                     Serial.println();
+                     Serial.print("Calling: ");
+                     Serial.println(numberToCall);
+                    if (!fona.callPhone(numberToCall)) {
+                        Serial.println(F("Failed"));
+                      } else {
+                        Serial.println(F("Sent!"));
+                      }
+                      
+                      // Number has been used, now clear the arrays 
+                      for( int i = 0; i < sizeof(numberToCall);  ++i ){
+                         numberToCall[i] = (char)0;  
+                         numberIndex = (char)0;  
+                        } 
+                      }
                
                 
-                while (numberToCall.length() < 10) {
-                  keyboardAnalog(); 
-                  char number = char(numberToCall);
-/* DEFECT - FONA wants number as a character, but my keypadsingleanalog.h is
- *          Using the length of the String for numberToCall to determine when
- *          the right number of digits for a phone number have been entered (it's 
- *          10, by the way). (For domestic US Calls). So I'm running into this nasty 
- *          problem of trying to convert a char to a string. This would be my first
- *          lesson in what the difference is. And a bugger of a lesson. 
- *          I think I'm going to modify the .h to make numberToCall a char, try to
- *          figure out a way to do some math on a char so that it stops once it has 
- *          a number greater than 1,000,000,000  Until next time 
-
-*/                  
-                  Serial.print("Number To Call Returned!: ");
-                  Serial.println(numberToCall);
-          //        if (!fona.callPhone(numberToCall)) {
-          //            Serial.println(F("Failed"));
-          //          } else {
-          //            Serial.println(F("Sent!"));
-          //          }
-                }
                   
                 }
                 else if (receiverState == LOW) {
