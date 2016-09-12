@@ -10,6 +10,13 @@ I used an Arduino and a FONA shield produced by AdaFruit. I can't say enough abo
 
 The other advantage to using an Arduino (and maybe a reason I needed at least an Arduino in the first place) is that I could take some of the other switches and levers on the phone and make them also functional. The reciever becomes a switch to trigger a function and I'll be able to trigger a servo to ring a real bell (it's gotta have that bell!). There's a volume button on the phone that I can also wire up to do something (like maybe adjust the volume, amazing) and at some point I'd like to be able to trigger a behavior when you put coins in it. There's a functioning coin mech. I'm hoping the mechanics are basic enough that I can hack it to trigger a response to any type of coin put into it. 
 
+# Breadboard
+<iframe frameborder='0' height='448' marginheight='0' marginwidth='0' scrolling='no' src='https://circuits.io/circuits/2618431-12-input-keypad-10-wire/embed#breadboard' width='650'></iframe>
+
+#Schematics
+<iframe frameborder='0' height='448' marginheight='0' marginwidth='0' scrolling='no' src='https://circuits.io/circuits/2618431-12-input-keypad-10-wire/embed#schematic' width='650'></iframe>
+
+
 # History
 Sept 11, 2016 - What it does so far
 1) Turn the reciever on to accept an incoming call 
